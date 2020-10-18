@@ -60,15 +60,25 @@ ctx.stroke();
 
 $(document).ready(function () {
   var content = document.getElementById("content");
+  var style = document.createElement("style");
   initPieceRed.map((item, index) => {
     item.backgroundUrl = rootPath + item.name + ext;
   });
   initPieceRed.map((item, index) => {
     var element = document.createElement("button");
-    var style = document.createElement("style");
-    style.innerHTML = "# "+item.name+" { background: "+item.backgroundUrl+"; }";
+    style.innerHTML = "#btn-"+index+" { background-image: url('"+item.backgroundUrl+"'); }";
+    document.head.appendChild(style);
     element.setAttribute("class", "piece");
-    element.setAttribute("id", item.name);
+    element.setAttribute("id", 'btn-'+index);
     content.appendChild(element);
   });
+
 });
+function btn_Click(event, id) {
+  console.log(event);
+  var myButton =  document.getElementById(String(id));
+  var style = document.createElement("style");
+  style.innerHTML = "#"+id+" {top: 0px; left: 0px;background: green}";
+  console.log(style);
+  console.log(myButton);
+}
