@@ -34,7 +34,8 @@ const initPieceRed = [
 ];
 const ext = ".png";
 const rootPath = "./img/";
-const space = 57;
+const spaceX = 57;
+const spaceY = 57;
 const initPieceBlack = [
   new Piece("90.00", [10, 1]),
   new Piece("90.00", [10, 9]),
@@ -55,30 +56,60 @@ const initPieceBlack = [
 ];
 
 var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
-ctx.stroke();
+
 
 $(document).ready(function () {
-  var content = document.getElementById("content");
-  var style = document.createElement("style");
-  initPieceRed.map((item, index) => {
-    item.backgroundUrl = rootPath + item.name + ext;
-  });
-  initPieceRed.map((item, index) => {
-    var element = document.createElement("button");
-    style.innerHTML = "#btn-"+index+" { background-image: url('"+item.backgroundUrl+"'); }";
-    document.head.appendChild(style);
-    element.setAttribute("class", "piece");
-    element.setAttribute("id", 'btn-'+index);
-    content.appendChild(element);
-  });
-
+  init(initPieceRed, 1);
+  init(initPieceBlack, -1);
 });
 function btn_Click(event, id) {
-  console.log(event);
-  var myButton =  document.getElementById(String(id));
+  var myButton = document.getElementById(String(id));
+  myButton.style.opacity = 0.8;
+  canvas.onclick = function(ev) {
+    myButton.style.opacity = 1;
+    var y = ev.clientX - canvas.offsetTop;
+    var x = ev.clientY - canvas.offsetLeft;
+    console.log(x);
+    console.log(y);
+    myButton.style.top = "" + (x-16) + "px";
+    myButton.style.left = "" + (y-140) + "px";
+  }
+  // document.onmousedown = function (event) {
+  //   const rect = canvas.getBoundingClientRect();
+  //   const x = event.clientX - rect.left;
+  //   const y = event.clientY - rect.top;
+  //   myButton.style.top = "" + x + "px";
+  //   myButton.style.left = "" + y + "px";
+  //   console.log("x: " + x + " y: " + y);
+  //   myButton.style.opacity = 1;
+  // };
+}
+
+function init(listPiece = [], type) {
+  var content = document.getElementById("content");
   var style = document.createElement("style");
-  style.innerHTML = "#"+id+" {top: 0px; left: 0px;background: green}";
-  console.log(style);
-  console.log(myButton);
+  var styleCss = "";
+  listPiece.map((item, index) => {
+    item.backgroundUrl = rootPath + item.name + ext;
+  });
+  listPiece.map((item, index) => {
+    var element = document.createElement("button");
+    styleCss +=
+      "#btn-" +
+      index +
+      type +
+      " { background-image: url('" +
+      item.backgroundUrl +
+      "'); } ";
+    element.setAttribute("class", "piece");
+    element.setAttribute("onclick", "btn_Click(event, this.id)");
+    element.setAttribute("id", "btn-" + index + type);
+    var x = (item.position[0] - 1) * spaceX;
+    var y = (item.position[1] - 1) * spaceY;
+    element.style.top = "" + x + "px";
+    element.style.left = "" + (y+10) + "px";
+    content.appendChild(element);
+  });
+  style.innerHTML = styleCss;
+  document.head.appendChild(style);
 }
